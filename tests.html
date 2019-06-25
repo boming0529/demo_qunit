@@ -24,12 +24,40 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <script>
+        "use strict";
+
         let arr = ['react', 'angular', 'vue'];
-        QUnit.test("Origin testing", function (assert) {
-            assert.ok(arr.indexOf('angular') !== -1 , 'angular existed');
+        QUnit.test("ES 5 indexOf", function (assert) {
+            assert.ok(arr.indexOf('angular') !== -1, 'angular existed');
         });
-        QUnit.test("ES 7 feature testing", function (assert) {
+
+        QUnit.test("ES 7 includes", function (assert) {
             assert.ok(arr.includes('angular'), 'angular existed');
+        });
+
+        QUnit.test("ES 6 rest parameter", function (assert) {
+            var demo = (a, b, ...c) => {
+                assert.ok(c[0] === 3, 'The rest parameter first arguments is 3');
+                assert.ok(Array.isArray(c), 'The rest parameter is array');
+            };
+            demo(1, 2, 3, 4, 5);
+        });
+
+        var demo2 = function (assert) {
+            assert.ok(arguments[1] === 1, 'The argument object first arguments is 1');
+            assert.ok(!Array.isArray(arguments), 'The argument object is not array');
+        };
+        QUnit.test("ES 5 arguments Object", function (assert) {
+            demo2(assert, 1, 2, 3, 4, 5);
+        });
+
+        QUnit.test("ES 6 Destruturing assignmet + arrow function", function (assert) {
+            var demo3 = arr.map((material) => {
+                return material.length;
+            }); 
+            assert.ok(demo3[1] === 7, "The 'angular' is 7 character combination");
+            var demo4 = arr.map(({length}) => length);
+            assert.ok(demo4[1] === 7, "again ,The 'angular' is 7 character combination");
         });
     </script>
 </body>
