@@ -59,6 +59,40 @@
             var demo4 = arr.map(({length}) => length);
             assert.ok(demo4[1] === 7, "again ,The 'angular' is 7 character combination");
         });
+
+        let demogeneration = function*(action) {
+            const imposter = yield (`Hattori ${action}`);
+            yield (`Yoshi (${imposter}) ${action}`);
+        }
+        QUnit.test("ES 6 Generator Test", function (assert) {
+            const demoIterator = demogeneration("Skulk");
+            const demo5_reuslt1 = demoIterator.next();
+            assert.ok(demo5_reuslt1.value === 'Hattori Skulk', 'Hattori is skulking');
+            const demo5_reuslt2 = demoIterator.next('Hanzo');
+            assert.ok(demo5_reuslt2.value === 'Yoshi (Hanzo) Skulk', 'We have an imposter !');
+        });
+
+        let WarriorGenerator = function*() {
+            yield "Sun Tzu";
+            yield* NinjaGenerator();
+            yield "Genghis Khan";
+        }
+        let NinjaGenerator = function*() {
+            yield "Hattori";
+            yield "Yoshi";
+        }
+        QUnit.test("ES 6 Generator Test old school #2", function(assert) {
+            const warriorIterator = WarriorGenerator();
+            let item;
+            while(!(item = warriorIterator.next()).done) {
+                assert.ok(item !== null, item.value);
+            }
+        });
+        QUnit.test("ES 6 Generator Test Syntactic sugar #2", function(assert) {
+            for (let warrior of WarriorGenerator()) {
+                assert.ok(warrior !== null, warrior);
+            }
+        });
     </script>
 </body>
 
