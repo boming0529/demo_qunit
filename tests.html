@@ -54,15 +54,17 @@
         QUnit.test("ES 6 Destruturing assignmet + arrow function", function (assert) {
             var demo3 = arr.map((material) => {
                 return material.length;
-            }); 
+            });
             assert.ok(demo3[1] === 7, "The 'angular' is 7 character combination");
-            var demo4 = arr.map(({length}) => length);
+            var demo4 = arr.map(({
+                length
+            }) => length);
             assert.ok(demo4[1] === 7, "again ,The 'angular' is 7 character combination");
         });
 
-        let demogeneration = function*(action) {
-            const imposter = yield (`Hattori ${action}`);
-            yield (`Yoshi (${imposter}) ${action}`);
+        let demogeneration = function* (action) {
+            const imposter = yield(`Hattori ${action}`);
+            yield(`Yoshi (${imposter}) ${action}`);
         }
         QUnit.test("ES 6 Generator Test", function (assert) {
             const demoIterator = demogeneration("Skulk");
@@ -72,26 +74,79 @@
             assert.ok(demo5_reuslt2.value === 'Yoshi (Hanzo) Skulk', 'We have an imposter !');
         });
 
-        let WarriorGenerator = function*() {
+        let WarriorGenerator = function* () {
             yield "Sun Tzu";
             yield* NinjaGenerator();
             yield "Genghis Khan";
         }
-        let NinjaGenerator = function*() {
+        let NinjaGenerator = function* () {
             yield "Hattori";
             yield "Yoshi";
         }
-        QUnit.test("ES 6 Generator Test old school #2", function(assert) {
+        QUnit.test("ES 6 Generator Test old school #2", function (assert) {
             const warriorIterator = WarriorGenerator();
             let item;
-            while(!(item = warriorIterator.next()).done) {
+            while (!(item = warriorIterator.next()).done) {
                 assert.ok(item !== null, item.value);
             }
         });
-        QUnit.test("ES 6 Generator Test Syntactic sugar #2", function(assert) {
+        QUnit.test("ES 6 Generator Test Syntactic sugar #2", function (assert) {
             for (let warrior of WarriorGenerator()) {
                 assert.ok(warrior !== null, warrior);
             }
+        });
+
+        QUnit.test("ES 5 use prototpye do inherit", function (assert) {
+            function Person(name) {
+                this.name
+            }
+            Person.prototype.dance = () => true;
+
+            function Ninja(name, weapon) {
+                this.name = name;
+                this.weapon = weapon;
+            }
+            Ninja.prototype = new Person(Ninja.name);
+            Ninja.prototype.wieldWeapon = () => true;
+            Object.defineProperty(Ninja.prototype, 'constructor', {
+                enumerable: false,
+                value: Ninja,
+                writable: true,
+            });
+            let ninja = new Ninja('Yoshi', 'sword');
+            assert.ok(ninja instanceof Ninja, "ninja object is Ninja");
+            assert.ok(ninja instanceof Person, "ninja object is inherit Person");
+            assert.ok('dance' in ninja, "ninja has Person porperty");
+            assert.ok(ninja.dance(), "ninja can dancing");
+            assert.ok(ninja.wieldWeapon(), "ninja can attack");
+        });
+
+        QUnit.test("ES 6 use class extends do inherit", function (assert) {
+            class Person {
+                constructor(name) {
+                    this.name = name;
+                }
+                dance() {
+                    return true;
+                }
+            }
+
+            class Ninja extends Person {
+                constructor(name, weapon) {
+                    super(name)
+                    this.name = name;
+                    this.weapon = weapon;
+                }
+                wieldWeapon() {
+                    return true;
+                }
+            }
+            let ninja2 = new Ninja('Yoshi', 'sword');
+            assert.ok(ninja2 instanceof Ninja, "ninja object is Ninja");
+            assert.ok(ninja2 instanceof Person, "ninja object is inherit Person");
+            assert.ok('dance' in ninja2, "ninja has Person porperty");
+            assert.ok(ninja2.dance(), "ninja can dancing");
+            assert.ok(ninja2.wieldWeapon(), "ninja can attack");
         });
     </script>
 </body>
